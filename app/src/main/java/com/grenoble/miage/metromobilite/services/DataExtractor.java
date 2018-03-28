@@ -38,7 +38,7 @@ public class DataExtractor{
      *
      * @return String comportant la liste de tous les trnasports
      */
-    public String getTransportLignes(){
+    public String getTransportLines(){
         String inline = "";
         try {
 

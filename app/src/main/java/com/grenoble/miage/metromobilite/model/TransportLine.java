@@ -75,4 +75,18 @@ public class TransportLine {
         this.type = type;
     }
 
+    // METHODS
+
+    @Override
+    public String toString() {
+        return "TransportLine " +
+                id +
+                ", " + shortName +
+                ", " + longName +
+                ", " + color +
+                ", " + textColor +
+                ", " + mode +
+                ", " + type;
+    }
+
 }

@@ -17,12 +17,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try  {
-                    System.out.println(DataExtractor.getInstance().getTransportLignes());
+                    System.out.println(DataExtractor.getInstance().getTransportLines());
+                    // TODO récupérer et afficher une instance de TransportLine avec le toString
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
         thread.start();
+
     }
 }
