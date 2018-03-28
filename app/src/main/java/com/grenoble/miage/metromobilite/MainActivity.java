@@ -3,7 +3,11 @@ package com.grenoble.miage.metromobilite;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.grenoble.miage.metromobilite.model.TransportLine;
+import com.grenoble.miage.metromobilite.parsers.LineParser;
 import com.grenoble.miage.metromobilite.services.DataExtractor;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,8 +21,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try  {
-                    System.out.println(DataExtractor.getInstance().getTransportLines());
-                    // TODO récupérer et afficher une instance de TransportLine avec le toString
+                    LineParser lineParser = new LineParser(DataExtractor.getInstance().getTransportLines());
+                    ArrayList<TransportLine> arr = lineParser.parse();
+                    for (TransportLine t : arr) {
+                        System.out.println(t.toString());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

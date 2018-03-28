@@ -74,6 +74,7 @@ public class TransportLine {
         this.mode = mode;
         this.type = type;
     }
+    public TransportLine () {}
 
     // METHODS
 

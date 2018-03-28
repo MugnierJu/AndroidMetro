@@ -49,7 +49,7 @@ public class DataExtractor{
 
             int response = conn.getResponseCode();
 
-            //dervrai test quel exception est renvoyée
+            //devrait tester quelle exception est renvoyée
 
             if(response == 200)
             {
