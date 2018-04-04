@@ -56,5 +56,17 @@ public class TransportStop {
         this.lon = lon;
         this.lat = lat;
     }
+    public TransportStop() {}
+
+    // METHODS
+    @Override
+    public String toString() {
+        return "TransportStop " +
+                code +
+                ", " + city +
+                ", " + name +
+                ", " + lon +
+                ", " + lat;
+    }
 
 }

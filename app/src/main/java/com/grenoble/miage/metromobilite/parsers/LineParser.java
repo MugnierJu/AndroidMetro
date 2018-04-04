@@ -29,17 +29,23 @@ public class LineParser {
             JSONObject jsonObject;
             for(int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-                transportLines.add(
-                    new TransportLine(
-                        jsonObject.getString("id"),
-                        jsonObject.getString("shortName"),
-                        jsonObject.getString("longName"),
-                        jsonObject.getString("color"),
-                        jsonObject.getString("textColor"),
-                        jsonObject.getString("mode"),
-                        jsonObject.getString("type")
-                    )
-                );
+                if (jsonObject.getString("type").contains("PROXIMO")
+                        || jsonObject.getString("type").contains("CHRONO")
+                        || jsonObject.getString("type").contains("FLEXO")
+                        || jsonObject.getString("type").contains("TRAM")
+                        ) {
+                    transportLines.add(
+                            new TransportLine(
+                                    jsonObject.getString("id"),
+                                    jsonObject.getString("shortName"),
+                                    jsonObject.getString("longName"),
+                                    jsonObject.getString("color"),
+                                    jsonObject.getString("textColor"),
+                                    jsonObject.getString("mode"),
+                                    jsonObject.getString("type")
+                            )
+                    );
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
