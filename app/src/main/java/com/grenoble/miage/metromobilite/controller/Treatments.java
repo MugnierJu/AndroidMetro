@@ -5,4 +5,5 @@ package com.grenoble.miage.metromobilite.controller;
  */
 
 public class Treatments {
+    
 }
