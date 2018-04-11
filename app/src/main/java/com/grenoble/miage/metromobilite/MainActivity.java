@@ -3,7 +3,9 @@ package com.grenoble.miage.metromobilite;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -17,6 +19,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button selectLineButton;
+    public static final int REQUEST_ID = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,13 +32,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try  {
+                    System.out.println("lines : ");
                     System.out.println(DataExtractor.getInstance().getTransportLignes());
+                    System.out.println("stops : ");
+                    System.out.println(DataExtractor.getInstance().getStops("SEM:C4"));
+                    System.out.println("arrival : ");
+                    System.out.println(DataExtractor.getInstance().getNextArrival("SEM:GENLAPOYA"));
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
         thread.start();
+
+        selectLineButton = (Button) findViewById(R.id.selectLineButton);
+        selectLineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent addIntent = new Intent(MainActivity.this, SelectLineActivity.class);
+                startActivityForResult(addIntent, REQUEST_ID);
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+        //TO DELETE
 
         Spinner selectLine = (Spinner) findViewById(R.id.spinnerSelectLine);
         // Create an ArrayAdapter using the string array and a default spinner layout

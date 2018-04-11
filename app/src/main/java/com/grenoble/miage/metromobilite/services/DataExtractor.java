@@ -24,8 +24,8 @@ public class DataExtractor{
         //sale
         try {
             transportLigneUrl = new URL("https://data.metromobilite.fr/api/routers/default/index/routes");
-            stop = "data.metromobilite.fr/api/routers/default/index/routes/";
-            arrival = "data.metromobilite.fr/api/routers/default/index/clusters/";
+            stop = "https://data.metromobilite.fr/api/routers/default/index/routes/";
+            arrival = "https://data.metromobilite.fr/api/routers/default/index/clusters/";
             endArrival = "/stoptimes";
             endStop = "/clusters";
         } catch (MalformedURLException e) {
@@ -77,6 +77,11 @@ public class DataExtractor{
     }
 
 
+    /**
+     * Get the stops from a line
+     * @param line
+     * @return
+     */
     public String getStops(String line){
         String stops = "";
         try {
@@ -112,6 +117,7 @@ public class DataExtractor{
         String arrivals = "";
         try {
             URL stopUrl = new URL(arrival+stop+endArrival);
+            System.out.println(stopUrl);
             //Ouvrir la connexion
             HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
             conn.setRequestMethod("GET");

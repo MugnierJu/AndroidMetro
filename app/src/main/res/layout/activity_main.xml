@@ -14,7 +14,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="20pt"
-        android:id="@+id/buttonSearchStop"
+        android:id="@+id/selectLineButton"
         android:drawableLeft="@android:drawable/ic_menu_search"
         android:layout_alignTop="@+id/editSearchStop"
         android:layout_alignParentEnd="true" />
