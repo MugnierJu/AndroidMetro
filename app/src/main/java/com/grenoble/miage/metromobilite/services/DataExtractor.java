@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -14,6 +13,10 @@ import java.util.Scanner;
 public class DataExtractor{
 
     private URL transportLigneUrl ;
+    private String stop ;
+    private String arrival ;
+    private String endArrival;
+    private String endStop;
 
     private static DataExtractor instance = null;
 
@@ -21,6 +24,10 @@ public class DataExtractor{
         //sale
         try {
             transportLigneUrl = new URL("https://data.metromobilite.fr/api/routers/default/index/routes");
+            stop = "https://data.metromobilite.fr/api/routers/default/index/routes/";
+            arrival = "https://data.metromobilite.fr/api/routers/default/index/clusters/";
+            endArrival = "/stoptimes";
+            endStop = "/clusters";
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -36,10 +43,15 @@ public class DataExtractor{
 
     /**
      *
-     * @return String comportant la liste de tous les trnasports
+     * @return String comportant la liste de tous les transports
      */
+<<<<<<< HEAD
     public String getTransportLines(){
         String inline = "";
+=======
+    public String getTransportLignes(){
+        String lines = "";
+>>>>>>> 250ab16ca1c95c64bf5e9e5a2790a90f64d3eb20
         try {
 
             //Ouvrir la connexion
@@ -56,7 +68,7 @@ public class DataExtractor{
                 Scanner sc = new Scanner(transportLigneUrl.openStream());
                 while(sc.hasNext())
                 {
-                    inline+=sc.nextLine();
+                    lines+=sc.nextLine();
                 }
                 sc.close();
             }
@@ -66,8 +78,78 @@ public class DataExtractor{
             e.printStackTrace();
         }
 
-        return inline;
+        return lines;
     }
+
+
+    /**
+     * Get the stops from a line
+     * @param line
+     * @return
+     */
+    public String getStops(String line){
+        String stops = "";
+        try {
+            URL stopUrl = new URL(stop+line+ endStop);
+            //Ouvrir la connexion
+            HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int response = conn.getResponseCode();
+
+            //dervrai test quel exception est renvoyée
+
+            if(response == 200)
+            {
+                Scanner sc = new Scanner(stopUrl.openStream());
+                while(sc.hasNext())
+                {
+                    stops+=sc.nextLine();
+                }
+                sc.close();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return stops;
+    }
+
+    public String getNextArrival(String stop){
+        String arrivals = "";
+        try {
+            URL stopUrl = new URL(arrival+stop+endArrival);
+            System.out.println(stopUrl);
+            //Ouvrir la connexion
+            HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int response = conn.getResponseCode();
+
+            //dervrai test quel exception est renvoyée
+
+            if(response == 200)
+            {
+                Scanner sc = new Scanner(stopUrl.openStream());
+                while(sc.hasNext())
+                {
+                    arrivals+=sc.nextLine();
+                }
+                sc.close();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return arrivals;
+    }
+
 
 
 }
