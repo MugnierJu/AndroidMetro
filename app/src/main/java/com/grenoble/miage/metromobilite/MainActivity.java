@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //TO DELETE
-
+        /*
         Spinner selectLine = (Spinner) findViewById(R.id.spinnerSelectLine);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayList<String> list =new ArrayList<String>();
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         ListView lv2 = (ListView)findViewById(R.id.listView2);
 
         lv1.setAdapter(adapter);
-
+        */
 
 
         //TODO vérifier le tabHost

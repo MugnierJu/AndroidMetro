@@ -45,13 +45,8 @@ public class DataExtractor{
      *
      * @return String comportant la liste de tous les transports
      */
-<<<<<<< HEAD
-    public String getTransportLines(){
-        String inline = "";
-=======
     public String getTransportLignes(){
         String lines = "";
->>>>>>> 250ab16ca1c95c64bf5e9e5a2790a90f64d3eb20
         try {
 
             //Ouvrir la connexion
