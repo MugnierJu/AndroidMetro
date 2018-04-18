@@ -26,6 +26,7 @@ public class DataExtractor{
     private DataExtractor(){
         //sale
         try {
+            //TODO remove this
             transportLigneUrl = new URL("https://data.metromobilite.fr/api/routers/default/index/routes");
             stop = "https://data.metromobilite.fr/api/routers/default/index/routes/";
             arrival = "https://data.metromobilite.fr/api/routers/default/index/clusters/";

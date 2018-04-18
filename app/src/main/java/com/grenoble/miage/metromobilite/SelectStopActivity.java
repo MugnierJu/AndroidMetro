@@ -1,17 +1,22 @@
 package com.grenoble.miage.metromobilite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.grenoble.miage.metromobilite.controller.PreferencesHandler;
 import com.grenoble.miage.metromobilite.model.Arrival;
 import com.grenoble.miage.metromobilite.model.LineArrival;
+import com.grenoble.miage.metromobilite.model.Preference;
 import com.grenoble.miage.metromobilite.model.TransportLine;
 import com.grenoble.miage.metromobilite.model.TransportStop;
 import com.grenoble.miage.metromobilite.parsers.ArrivalParser;
@@ -37,6 +42,7 @@ public class SelectStopActivity extends AppCompatActivity {
     Spinner directionSpinner;
     ListView nextArrivalView;
     Spinner stopSpinner;
+    Button favButton;
 
     //Adapters
     ArrayAdapter<String> stopsAdapter;
@@ -77,6 +83,25 @@ public class SelectStopActivity extends AppCompatActivity {
         //Instanciate the direction spinner and the list of next arrivals
         directionSpinner = (Spinner) findViewById(R.id.spinnerdirection);
         nextArrivalView = (ListView) findViewById(R.id.nextarrival);
+
+
+        //TODO implement fav button (add stop line and direction to the storage) + use a nice toast to prevent the user ;)
+        favButton = (Button) findViewById(R.id.favbutton);
+        favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PreferencesHandler prefHandler = new PreferencesHandler();
+                prefHandler.savePreference(new Preference(getSelectedStrop().getCode(),getSelectedStrop().getName(),transportLine.getShortName(),transportLine.getLongName(),getSelectedDirection(),false),context);
+
+                Toast.makeText(getApplicationContext(),
+                        getSelectedStrop().getName()+", direction : "+getSelectedDirection()+"\nAjouté aux favoris.",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+
 
         stopSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -127,6 +152,31 @@ public class SelectStopActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     *
+     * @return the current stop selected in the spinner
+     */
+    private TransportStop getSelectedStrop(){
+        for(TransportStop stop : stopList){
+            if(stopSpinner.getSelectedItem().toString().equals(stop.getName())){
+                return stop;
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @return the selected direction in the spinner
+     */
+    private String getSelectedDirection(){
+        return directionSpinner.getSelectedItem().toString();
+    }
+
+    /**
+     *
+     * @return a list of the arrivals for the selected direction
+     */
     private List<String> getArrivalForCurrentDirection(){
         List<String> resultArrivals = new ArrayList<>();
         for(LineArrival line : lineArrivalList){
@@ -140,6 +190,10 @@ public class SelectStopActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Get all the needed data  of the stops
+     * @param line
+     */
     private void prepareStopListData(final TransportLine line){
         stopList = new ArrayList<>();
 
@@ -159,9 +213,14 @@ public class SelectStopActivity extends AppCompatActivity {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
-
     }
 
+
+    /**
+     * Get all the arrivals for the select stop
+     * @param line
+     * @param stop
+     */
     public void prepareArrivalListData(TransportLine line, final TransportStop stop){
         lineArrivalList = new ArrayList<>();
 
