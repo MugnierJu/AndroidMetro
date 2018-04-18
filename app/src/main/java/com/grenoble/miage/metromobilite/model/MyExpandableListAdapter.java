@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.grenoble.miage.metromobilite.R;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -90,7 +89,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         String headerTitle = (String) getGroup(groupId);
         if (view == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = infalInflater.inflate(R.layout.list_group, null);
+            view = infalInflater.inflate(R.layout.line_list_group, null);
         }
 
         TextView lblListHeader = (TextView) view.findViewById(R.id.lblListHeader);
@@ -105,7 +104,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         final String childText = (String) getChild(groupId, childId);
         if (view == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = infalInflater.inflate(R.layout.list_item, null);
+            view = infalInflater.inflate(R.layout.line_list_item, null);
         }
 
         TextView txtListChild = (TextView) view.findViewById(R.id.lblListItem);

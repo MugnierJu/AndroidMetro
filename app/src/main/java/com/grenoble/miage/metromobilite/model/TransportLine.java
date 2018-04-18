@@ -1,12 +1,14 @@
 package com.grenoble.miage.metromobilite.model;
 
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by rubata on 21/03/18.
  */
 
-public class TransportLine {
+public class TransportLine implements Parcelable {
 
     // VARIABLES
 
@@ -89,5 +91,47 @@ public class TransportLine {
                 ", " + mode +
                 ", " + type;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(shortName);
+        dest.writeString(longName);
+        dest.writeString(color);
+        dest.writeString(textColor);
+        dest.writeString(mode);
+        dest.writeString(type);
+    }
+
+    public static final Parcelable.Creator<TransportLine> CREATOR = new Parcelable.Creator<TransportLine>()
+    {
+        @Override
+        public TransportLine createFromParcel(Parcel source)
+        {
+            return new TransportLine(source);
+        }
+
+        @Override
+        public TransportLine[] newArray(int size)
+        {
+            return new TransportLine[size];
+        }
+    };
+
+    public TransportLine(Parcel in) {
+        this.id = in.readString();
+        this.shortName = in.readString();
+        this.longName = in.readString();
+        this.color = in.readString();
+        this.textColor = in.readString();
+        this.mode = in.readString();
+        this.type = in.readString();
+    }
+
 
 }

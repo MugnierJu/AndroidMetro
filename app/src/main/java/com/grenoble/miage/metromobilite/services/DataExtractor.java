@@ -1,5 +1,8 @@
 package com.grenoble.miage.metromobilite.services;
 
+import com.grenoble.miage.metromobilite.model.TransportLine;
+import com.grenoble.miage.metromobilite.model.TransportStop;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -82,10 +85,10 @@ public class DataExtractor{
      * @param line
      * @return
      */
-    public String getStops(String line){
+    public String getStops(TransportLine line){
         String stops = "";
         try {
-            URL stopUrl = new URL(stop+line+ endStop);
+            URL stopUrl = new URL(stop+line.getId()+ endStop);
             //Ouvrir la connexion
             HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
             conn.setRequestMethod("GET");
@@ -113,11 +116,11 @@ public class DataExtractor{
         return stops;
     }
 
-    public String getNextArrival(String stop){
+    public String getNextArrival(TransportStop stop){
         String arrivals = "";
         try {
-            URL stopUrl = new URL(arrival+stop+endArrival);
-            System.out.println(stopUrl);
+            URL stopUrl = new URL(arrival+stop.getCode()+endArrival);
+
             //Ouvrir la connexion
             HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
             conn.setRequestMethod("GET");

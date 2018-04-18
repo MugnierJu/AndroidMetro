@@ -29,26 +29,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        
-
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try  {
-                    System.out.println("lines : ");
-                    System.out.println(DataExtractor.getInstance().getTransportLignes());
-                    System.out.println("stops : ");
-                    System.out.println(DataExtractor.getInstance().getStops("SEM:C4"));
-                    System.out.println("arrival : ");
-                    System.out.println(DataExtractor.getInstance().getNextArrival("SEM:GENLAPOYA"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-
         selectLineButton = (Button) findViewById(R.id.selectLineButton);
         selectLineButton.setOnClickListener(new View.OnClickListener() {
             @Override

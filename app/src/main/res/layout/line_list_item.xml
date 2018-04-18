@@ -3,8 +3,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="55dip">
-
-    <TextView
+    <!--
+        <TextView
+            android:id="@+id/lblListItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="30sp"
+            android:background="@drawable/rounded_textview"
+            android:textColor="@android:color/white"
+            android:gravity="center" />
+        -->
+        <TextView
         android:id="@+id/lblListItem"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
