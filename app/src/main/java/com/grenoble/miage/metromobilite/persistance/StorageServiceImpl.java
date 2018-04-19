@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.FileOutputStream;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class StorageServiceImpl implements StorageService {
 
@@ -16,7 +17,7 @@ public class StorageServiceImpl implements StorageService {
 
     public static StorageService getInstance(){
         if(instance == null){
-            return  new StorageServiceImpl();
+            instance = new StorageServiceImpl();
         }
         return instance;
     }
@@ -27,7 +28,8 @@ public class StorageServiceImpl implements StorageService {
         String temp="";
         try {
             FileInputStream fis = openFileTORead(ctx);
-            while( (c = fis.read()) != -1){
+            InputStreamReader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            while( (c = reader.read()) != -1){
                 temp = temp + Character.toString((char)c);
             }
             fis.close();
@@ -39,10 +41,12 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public void addValue( String value,Context ctx) {
+        String oldValues = getValues(ctx);
         try {
             FileOutputStream fos =openFileToWrite(ctx);
-            fos.write(value.getBytes());
-            fos.close();
+            OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+            writer.write(oldValues+value);
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,6 +55,18 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public void removeValue(String value,Context ctx) {
 
+    }
+
+    @Override
+    public void clearAllValues(Context ctx){
+        try {
+            FileOutputStream fos =openFileToWrite(ctx);
+            OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private FileOutputStream openFileToWrite(Context ctx){

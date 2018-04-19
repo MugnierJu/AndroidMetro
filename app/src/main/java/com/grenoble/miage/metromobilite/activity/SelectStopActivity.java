@@ -1,7 +1,6 @@
-package com.grenoble.miage.metromobilite;
+package com.grenoble.miage.metromobilite.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.grenoble.miage.metromobilite.R;
 import com.grenoble.miage.metromobilite.controller.PreferencesHandler;
 import com.grenoble.miage.metromobilite.model.Arrival;
 import com.grenoble.miage.metromobilite.model.LineArrival;
@@ -91,7 +91,7 @@ public class SelectStopActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PreferencesHandler prefHandler = new PreferencesHandler();
-                prefHandler.savePreference(new Preference(getSelectedStrop().getCode(),getSelectedStrop().getName(),transportLine.getShortName(),transportLine.getLongName(),getSelectedDirection(),false),context);
+                prefHandler.savePreference(new Preference(getSelectedStrop().getCode(),getSelectedStrop().getName(),transportLine.getId(),transportLine.getLongName(),getSelectedDirection(),false),context);
 
                 Toast.makeText(getApplicationContext(),
                         getSelectedStrop().getName()+", direction : "+getSelectedDirection()+"\nAjouté aux favoris.",

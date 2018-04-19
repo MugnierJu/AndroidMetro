@@ -5,9 +5,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Doit être parcelable afin d'être transmit dans un intent
  * Created by rubata on 21/03/18.
  */
-
 public class TransportLine implements Parcelable {
 
     // VARIABLES

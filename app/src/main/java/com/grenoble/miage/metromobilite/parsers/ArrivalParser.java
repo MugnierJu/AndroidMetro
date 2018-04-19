@@ -20,6 +20,63 @@ public class ArrivalParser {
         this.toParse = toParse;
     }
 
+    public ArrayList<LineArrival> parse(String lineId) {
+        try {
+            JSONArray jsonArray = new JSONArray(toParse);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+
+                //Analyse the pattern
+                JSONObject pattern = (JSONObject) jsonObject.get("pattern");
+                String id = (String) pattern.get("id");
+
+                //Check if the list of arrivals is for the good line
+                if (id.contains(lineId)) {
+                    LineArrival lineArival = new LineArrival();
+
+                    //And if the direction hasn't been already taken (weird stuff appended for the A tram)
+                    boolean isDouble = false;
+                    for(LineArrival existingLine : lineArrivals){
+                        if(existingLine.getDirection().equals(pattern.getString("desc"))){
+                            isDouble = true;
+                        }
+                    }
+                    if(!isDouble && !pattern.getString("desc").equals("SANS VOYAGEUR BUS")) {
+
+                        lineArival.setDirection(pattern.getString("desc"));
+                        JSONArray times = jsonObject.getJSONArray("times");
+
+                        for (int j = 0; j < times.length(); j++) {
+                            JSONObject jsonObject2 = (JSONObject) times.get(j);
+
+                            //JSONObject jsonObject2 = (JSONObject) slide;
+
+                            lineArival.addArrival(new Arrival(
+                                    jsonObject2.optString("stopId"),
+                                    jsonObject2.optString("stopName"),
+                                    jsonObject2.optInt("scheduledArrival"),
+                                    jsonObject2.optInt("scheduledDeparture"),
+                                    jsonObject2.optInt("realtimeArrival"),
+                                    jsonObject2.optInt("realtimeDeparture"),
+                                    jsonObject2.optInt("arrivalDelay"),
+                                    jsonObject2.optInt("departureDelay"),
+                                    jsonObject2.optBoolean("timepoint"),
+                                    jsonObject2.optBoolean("realtime"),
+                                    jsonObject2.optInt("serviceDay"),
+                                    jsonObject2.optInt("tripId")
+                            ));
+                        }
+                        lineArrivals.add(lineArival);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return lineArrivals;
+    }
+
     public ArrayList<LineArrival> parse(TransportLine line) {
         try {
             JSONArray jsonArray = new JSONArray(toParse);

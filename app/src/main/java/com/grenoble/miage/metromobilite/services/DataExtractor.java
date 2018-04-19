@@ -117,10 +117,52 @@ public class DataExtractor{
         return stops;
     }
 
+    /**
+     * Get the next arrivals for a stop
+     * @param stop
+     * @return
+     */
     public String getNextArrival(TransportStop stop){
         String arrivals = "";
         try {
             URL stopUrl = new URL(arrival+stop.getCode()+endArrival);
+
+            //Ouvrir la connexion
+            HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int response = conn.getResponseCode();
+
+            //dervrai test quel exception est renvoyée
+
+            if(response == 200)
+            {
+                Scanner sc = new Scanner(stopUrl.openStream());
+                while(sc.hasNext())
+                {
+                    arrivals+=sc.nextLine();
+                }
+                sc.close();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return arrivals;
+    }
+
+    /**
+     * Return the next arrivals for the selected stop
+     * @param stopCode the code of the stop in String
+     * @return
+     */
+    public String getNextArrival(String stopCode){
+        String arrivals = "";
+        try {
+            URL stopUrl = new URL(arrival+stopCode+endArrival);
 
             //Ouvrir la connexion
             HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();

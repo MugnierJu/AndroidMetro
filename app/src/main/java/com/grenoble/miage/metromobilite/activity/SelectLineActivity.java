@@ -1,4 +1,4 @@
-package com.grenoble.miage.metromobilite;
+package com.grenoble.miage.metromobilite.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
+import com.grenoble.miage.metromobilite.R;
 import com.grenoble.miage.metromobilite.model.MyExpandableListAdapter;
 import com.grenoble.miage.metromobilite.model.TransportLine;
 import com.grenoble.miage.metromobilite.model.TransportLineInView;
@@ -35,7 +36,7 @@ public class SelectLineActivity extends AppCompatActivity{
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
-    public static final int REQUEST_ID = 2;
+    public static final int REQUEST_ID = 11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
