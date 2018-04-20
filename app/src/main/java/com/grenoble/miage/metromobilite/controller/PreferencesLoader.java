@@ -51,34 +51,36 @@ public class PreferencesLoader extends Observable {
                 PreferencesHandler prefHandler = new PreferencesHandler();
                 prefList = prefHandler.getPreferences(ctx);
                 for(final Preference pref : prefList){
-                    List<LineArrival> lineArrivalList = new ArrayList<>();
+                    if(!pref.isMute()) {
+                        List<LineArrival> lineArrivalList = new ArrayList<>();
 
-                    //Getting the data of each preference
-                    ExecutorService arrivalExecutor = Executors.newSingleThreadExecutor();
-                    Callable<String> arrivalGetterCallable = new Callable<String>() {
-                        @Override
-                        public String call(){
-                            return DataExtractor.getInstance().getNextArrival(pref.getStopCode());
+                        //Getting the data of each preference
+                        ExecutorService arrivalExecutor = Executors.newSingleThreadExecutor();
+                        Callable<String> arrivalGetterCallable = new Callable<String>() {
+                            @Override
+                            public String call() {
+                                return DataExtractor.getInstance().getNextArrival(pref.getStopCode());
+                            }
+                        };
+
+                        Future<String> futureArrival = arrivalExecutor.submit(arrivalGetterCallable);
+                        try {
+                            lineArrivalList = new ArrivalParser(futureArrival.get(10, TimeUnit.SECONDS)).parse(pref.getLineId());
+                            //TODO handle the exceptions properly
+                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                            e.printStackTrace();
                         }
-                    };
 
-                    Future<String> futureArrival = arrivalExecutor.submit(arrivalGetterCallable);
-                    try {
-                        lineArrivalList = new ArrivalParser(futureArrival.get(10, TimeUnit.SECONDS)).parse(pref.getLineId());
-                        //TODO handle the exceptions properly
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Take only the 2 next arrivals for the selected direction
-                    List<Arrival> twoNextArrival = new ArrayList<>();
-                    for(LineArrival lineArrival : lineArrivalList){
-                        if(lineArrival.getDirection().equals(pref.getDirection())){
-                            twoNextArrival.add(lineArrival.getListArrivals().get(0));
-                            twoNextArrival.add(lineArrival.getListArrivals().get(1));
+                        // Take only the 2 next arrivals for the selected direction
+                        List<Arrival> twoNextArrival = new ArrayList<>();
+                        for (LineArrival lineArrival : lineArrivalList) {
+                            if (lineArrival.getDirection().equals(pref.getDirection())) {
+                                twoNextArrival.add(lineArrival.getListArrivals().get(0));
+                                twoNextArrival.add(lineArrival.getListArrivals().get(1));
+                            }
                         }
+                        newArrivalList.put(pref, twoNextArrival);
                     }
-                    newArrivalList.put(pref,twoNextArrival);
                 }
                 nextArrivalList = newArrivalList;
                 setChanged();

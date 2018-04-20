@@ -1,21 +1,19 @@
 package com.grenoble.miage.metromobilite.controller;
 
 import android.app.ActivityManager;
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 
 import com.grenoble.miage.metromobilite.R;
 import com.grenoble.miage.metromobilite.activity.MainActivity;
+import com.grenoble.miage.metromobilite.activity.PreferencesActivity;
+import com.grenoble.miage.metromobilite.model.Arrival;
+import com.grenoble.miage.metromobilite.model.Preference;
 
 import java.util.List;
 import java.util.Observable;
@@ -28,6 +26,8 @@ public class NotificationService implements Observer {
     private int REQUEST_CODE = 1;
     private int NOTIFICATION_ID = 1;
 
+    private Preference preference;
+
     public NotificationService(Context context){
         this.context = context;
     }
@@ -35,30 +35,50 @@ public class NotificationService implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        preference =null;
+
         if(isAppIsInBackground()){
-            System.out.println("bacground");
-            //TODO fix the notification system
-            /*
-            final NotificationManager mNotification = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            final Intent launchNotifiactionIntent = new Intent(context, MainActivity.class);
-            final PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                    REQUEST_CODE, launchNotifiactionIntent,
-                    PendingIntent.FLAG_ONE_SHOT);
+            Arrival arrivalToDisplay = getPrefArrival();
 
-            Notification.Builder builder = new Notification.Builder(context)
-                    .setWhen(System.currentTimeMillis())
-                    .setTicker("titre")
-                   // .setSmallIcon(R.drawable.notification)
-                    .setContentTitle("contentTitle")
-                    .setContentText("duTexte ?")
-                    .setContentIntent(pendingIntent);
+            // see if there is a arrival for a preference which is not mute
+            if(arrivalToDisplay != null) {
 
-            mNotification.notify(NOTIFICATION_ID, builder.build());
-            */
+                System.out.println("background");
+                //TODO fix the notification system
+                final NotificationManager mNotification = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                final Intent launchNotifiactionIntent = new Intent(context, PreferencesActivity.class);
+                final PendingIntent pendingIntent = PendingIntent.getActivity(context,
+                        REQUEST_CODE, launchNotifiactionIntent,
+                        PendingIntent.FLAG_ONE_SHOT);
+
+                Notification.Builder builder = new Notification.Builder(context)
+                        .setWhen(System.currentTimeMillis())
+                        .setTicker("Metromobilité")
+                        .setSmallIcon(R.drawable.circle)
+                        .setContentTitle(preference.getLineLongName())
+                        .setContentText(arrivalToDisplay.getTime())
+                        .setContentIntent(pendingIntent);
+
+                mNotification.notify(NOTIFICATION_ID, builder.build());
+            }
         }else {
             System.out.println("foreground");
         }
+    }
+
+    private Arrival getPrefArrival(){
+        PreferencesLoader preferencesLoader = PreferencesLoader.getInstance(context);
+
+        for(Preference pref : preferencesLoader.getPreferenceList()){
+            if(!pref.isMute()){
+                preference =pref;
+                List<Arrival> nextArrival =preferencesLoader.getNextArrivalList().get(pref);
+                return nextArrival.get(0);
+            }
+        }
+        return null;
     }
 
     /**
