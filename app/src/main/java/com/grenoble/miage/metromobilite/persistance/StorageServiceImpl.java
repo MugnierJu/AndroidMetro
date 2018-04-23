@@ -52,6 +52,11 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
+    /**
+     * Not implemented yet
+     * @param value
+     * @param ctx
+     */
     @Override
     public void removeValue(String value,Context ctx) {
 
@@ -82,6 +87,13 @@ public class StorageServiceImpl implements StorageService {
         try {
             return ctx.openFileInput(favFile);
         } catch (FileNotFoundException e) {
+            FileOutputStream outputStream = openFileToWrite(ctx);
+            try {
+                outputStream.close();
+                return  openFileTORead(ctx);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
             return null;
         }

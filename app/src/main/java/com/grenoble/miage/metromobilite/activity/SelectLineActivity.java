@@ -8,7 +8,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
 import com.grenoble.miage.metromobilite.R;
-import com.grenoble.miage.metromobilite.model.MyExpandableListAdapter;
+import com.grenoble.miage.metromobilite.adapter.MyExpandableListAdapter;
 import com.grenoble.miage.metromobilite.model.TransportLine;
 import com.grenoble.miage.metromobilite.model.TransportLineInView;
 import com.grenoble.miage.metromobilite.parsers.LineParser;
@@ -98,7 +98,7 @@ public class SelectLineActivity extends AppCompatActivity{
 
         Future<String> futureLines = lineExecutor.submit(lineGetterCallable);
         try {
-            lines = new LineParser(futureLines.get(5, TimeUnit.SECONDS)).parse();
+            lines = new LineParser(futureLines.get(15, TimeUnit.SECONDS)).parse();
             //TODO handle the exceptions properly
         } catch (InterruptedException e) {
             e.printStackTrace();

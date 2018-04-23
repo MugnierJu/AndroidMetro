@@ -3,6 +3,7 @@ package com.grenoble.miage.metromobilite.controller;
 import android.content.Context;
 
 import com.grenoble.miage.metromobilite.model.Preference;
+import com.grenoble.miage.metromobilite.persistance.StorageService;
 import com.grenoble.miage.metromobilite.persistance.StorageServiceImpl;
 
 import java.util.ArrayList;
@@ -11,12 +12,13 @@ import java.util.List;
 public class PreferencesHandler {
 
     /**
-     * Save a preference with the format [stopCode][stopName][lineId][lineLongName][direction][isMute];
+     * Save a preference_item with the format [stopCode][stopName][lineId][lineLongName][direction][isMute];
      * @param pref
      * @param ctx
      */
     public void savePreference(Preference pref, Context ctx){
-        String dataToSave = "["+pref.getStopCode()+"]["+pref.getStopName()+"]["+pref.getLineId()+"]["+pref.getLineLongName()+"]["+pref.getDirection()+"]["+pref.isMute()+"];";
+        muteAllPreferences(ctx);
+        String dataToSave = "["+pref.getStopCode()+"]["+pref.getStopName()+"]["+pref.getLineId()+"]["+pref.getLineLongName()+"]["+pref.getDirection()+"]["+false+"];";
         StorageServiceImpl.getInstance().addValue(dataToSave,ctx);
     }
 
@@ -42,7 +44,12 @@ public class PreferencesHandler {
                         break;
                     case 4: newPref.setDirection(attributes[i]);
                         break;
-                    case 5: newPref.setMute(Boolean.getBoolean(attributes[i]));
+                    case 5:
+                            if(attributes[i].equals("true")){
+                                newPref.setMute(true);
+                            }else{
+                                newPref.setMute(false);
+                            }
                         break;
                     default:
                         break;
@@ -53,7 +60,25 @@ public class PreferencesHandler {
         return preferenceList;
     }
 
+    /**
+     * clear all the registred prefrences
+     * @param ctx
+     */
     public void clearPreferences(Context ctx){
         StorageServiceImpl.getInstance().clearAllValues(ctx);
+    }
+
+    /**
+     * Set all the preferences mute attibute to true;
+     * @param ctx
+     */
+    public void muteAllPreferences(Context ctx){
+        List<Preference> prefList = getPreferences(ctx);
+        clearPreferences(ctx);
+
+        for(Preference pref : prefList){
+            String dataToSave = "["+pref.getStopCode()+"]["+pref.getStopName()+"]["+pref.getLineId()+"]["+pref.getLineLongName()+"]["+pref.getDirection()+"]["+true+"];";
+            StorageServiceImpl.getInstance().addValue(dataToSave,ctx);
+        }
     }
 }
