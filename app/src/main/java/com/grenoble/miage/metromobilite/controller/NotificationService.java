@@ -41,7 +41,7 @@ public class NotificationService implements Observer {
 
             Arrival arrivalToDisplay = getPrefArrival();
 
-            // see if there is a arrival for a preference which is not mute
+            // see if there is a arrival for a preference_item which is not mute
             if(arrivalToDisplay != null) {
 
                 System.out.println("background");

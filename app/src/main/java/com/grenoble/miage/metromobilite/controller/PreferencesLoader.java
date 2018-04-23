@@ -50,11 +50,13 @@ public class PreferencesLoader extends Observable {
 
                 PreferencesHandler prefHandler = new PreferencesHandler();
                 prefList = prefHandler.getPreferences(ctx);
+
                 for(final Preference pref : prefList){
+                    System.out.println(pref.getLineLongName()+" "+pref.isMute());
                     if(!pref.isMute()) {
                         List<LineArrival> lineArrivalList = new ArrayList<>();
 
-                        //Getting the data of each preference
+                        //Getting the data of each preference_item
                         ExecutorService arrivalExecutor = Executors.newSingleThreadExecutor();
                         Callable<String> arrivalGetterCallable = new Callable<String>() {
                             @Override
@@ -65,7 +67,7 @@ public class PreferencesLoader extends Observable {
 
                         Future<String> futureArrival = arrivalExecutor.submit(arrivalGetterCallable);
                         try {
-                            lineArrivalList = new ArrivalParser(futureArrival.get(10, TimeUnit.SECONDS)).parse(pref.getLineId());
+                            lineArrivalList = new ArrivalParser(futureArrival.get(15, TimeUnit.SECONDS)).parse(pref.getLineId());
                             //TODO handle the exceptions properly
                         } catch (InterruptedException | ExecutionException | TimeoutException e) {
                             e.printStackTrace();
@@ -86,7 +88,7 @@ public class PreferencesLoader extends Observable {
                 setChanged();
                 notifyObservers();
             }
-        }, 0, 5, TimeUnit.SECONDS);
+        }, 0, 10, TimeUnit.SECONDS);
 
     }
 
@@ -104,4 +106,5 @@ public class PreferencesLoader extends Observable {
     public HashMap<Preference,List<Arrival>> getNextArrivalList(){
         return nextArrivalList;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.grenoble.miage.metromobilite.model;
+package com.grenoble.miage.metromobilite.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
