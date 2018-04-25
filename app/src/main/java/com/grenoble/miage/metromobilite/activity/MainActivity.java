@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button selectLineButton;
     private Button preferenceButton;
+    private Button geolocalisationButton;
     public static final int REQUEST_ID_Line = 1;
     public static final int REQUEST_ID_Pref = 2;
     Context context;
@@ -51,6 +52,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //TODO test the hashmap create and observ, put the loader as an observable
+
+        geolocalisationButton = (Button) findViewById(R.id.geolocalisation);
+        geolocalisationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================");
+                Intent addIntent = new Intent(MainActivity.this, GeolocalisationActivity.class);
+                startActivity(addIntent);
+            }
+        });
 
         //Activate the Preference loader and the notification service;
         PreferencesLoader prefLoader = PreferencesLoader.getInstance(this);
