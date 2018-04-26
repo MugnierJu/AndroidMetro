@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         geolocalisationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================");
                 Intent addIntent = new Intent(MainActivity.this, GeolocalisationActivity.class);
                 startActivity(addIntent);
             }
