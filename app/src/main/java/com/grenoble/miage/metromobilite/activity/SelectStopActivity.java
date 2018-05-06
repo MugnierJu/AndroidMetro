@@ -1,8 +1,8 @@
 package com.grenoble.miage.metromobilite.activity;
 
-import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.grenoble.miage.metromobilite.R;
 import com.grenoble.miage.metromobilite.controller.PreferencesHandler;
+import com.grenoble.miage.metromobilite.controller.PreferencesLoader;
 import com.grenoble.miage.metromobilite.model.Arrival;
 import com.grenoble.miage.metromobilite.model.LineArrival;
 import com.grenoble.miage.metromobilite.model.Preference;
@@ -33,10 +34,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class SelectStopActivity extends AppCompatActivity {
+public class SelectStopActivity extends MyActivity {
     List<TransportStop> stopList;
     List<LineArrival> lineArrivalList;
-    TransportStop selectedStrop = null;
+    TransportStop selectedStop = null;
 
     //view elements
     Spinner directionSpinner;
@@ -49,8 +50,6 @@ public class SelectStopActivity extends AppCompatActivity {
     ArrayAdapter<String> directionAdapter;
     ArrayAdapter<String> arrivalAdapter;
 
-    Context context;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,8 +59,12 @@ public class SelectStopActivity extends AppCompatActivity {
 
         final TransportLine transportLine = (TransportLine) getIntent().getExtras().get("line");
 
-        TextView line = (TextView) findViewById(R.id.actualLine);
-        line.setText(transportLine.getLongName());
+        //Set the datas of the line
+        TextView lineShortName = (TextView) findViewById(R.id.actualShortLine);
+        lineShortName.setText(transportLine.getShortName());
+        lineShortName.getBackground().setColorFilter(Color.parseColor("#"+transportLine.getColor()), PorterDuff.Mode.SRC_OVER);
+        TextView lineLongName = (TextView) findViewById(R.id.actualLine);
+        lineLongName.setText(transportLine.getLongName());
 
         prepareStopListData(transportLine);
 
@@ -91,24 +94,24 @@ public class SelectStopActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PreferencesHandler prefHandler = new PreferencesHandler();
-                prefHandler.savePreference(new Preference(getSelectedStrop().getCode(),getSelectedStrop().getName(),transportLine.getId(),transportLine.getLongName(),getSelectedDirection(),false),context);
+                prefHandler.savePreference(new Preference(getSelectedStop().getCode(), getSelectedStop().getName(),transportLine.getId(),transportLine.getShortName(),transportLine.getColor(),getSelectedDirection(),false),context);
 
                 Toast.makeText(getApplicationContext(),
-                        getSelectedStrop().getName()+", direction : "+getSelectedDirection()+"\nAjouté aux favoris.",
+                        getSelectedStop().getName()+", direction : "+getSelectedDirection()+"\nAjouté aux favoris.",
                         Toast.LENGTH_LONG).show();
+
+                PreferencesLoader.getInstance(context).reloadPreferences();
             }
         });
-
-
 
 
 
         stopSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                selectedStrop = stopList.get(position);
+                selectedStop = stopList.get(position);
                 //Next arrival treatment
-                prepareArrivalListData(transportLine,selectedStrop);
+                prepareArrivalListData(transportLine, selectedStop);
 
                 //set the destination
                 List<String> directionList = new ArrayList<>();
@@ -156,7 +159,7 @@ public class SelectStopActivity extends AppCompatActivity {
      *
      * @return the current stop selected in the spinner
      */
-    private TransportStop getSelectedStrop(){
+    private TransportStop getSelectedStop(){
         for(TransportStop stop : stopList){
             if(stopSpinner.getSelectedItem().toString().equals(stop.getName())){
                 return stop;

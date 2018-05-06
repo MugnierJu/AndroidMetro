@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Build;
 
 import com.grenoble.miage.metromobilite.R;
-import com.grenoble.miage.metromobilite.activity.MainActivity;
 import com.grenoble.miage.metromobilite.activity.PreferencesActivity;
 import com.grenoble.miage.metromobilite.model.Arrival;
 import com.grenoble.miage.metromobilite.model.Preference;
@@ -57,7 +56,7 @@ public class NotificationService implements Observer {
                         .setWhen(System.currentTimeMillis())
                         .setTicker("Metromobilité")
                         .setSmallIcon(R.drawable.circle)
-                        .setContentTitle(preference.getLineLongName())
+                        .setContentTitle(preference.getLineName())
                         .setContentText(arrivalToDisplay.getTime())
                         .setContentIntent(pendingIntent);
 

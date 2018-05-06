@@ -1,6 +1,8 @@
 package com.grenoble.miage.metromobilite.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.grenoble.miage.metromobilite.R;
+import com.grenoble.miage.metromobilite.model.TransportLine;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +21,9 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<String> listDataHeader; // header data
-    private HashMap<String, List<String>> listDataChild; // child data and title
+    private HashMap<String, List<TransportLine>> listDataChild; // child data and title
 
-    public MyExpandableListAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData) {
+    public MyExpandableListAdapter(Context context, List<String> listDataHeader,HashMap<String, List<TransportLine>> listChildData) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listDataChild = listChildData;
@@ -101,14 +104,19 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupId, int childId, boolean b, View view, ViewGroup viewGroup) {
-        final String childText = (String) getChild(groupId, childId);
+        final TransportLine line = (TransportLine) getChild(groupId, childId);
         if (view == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = infalInflater.inflate(R.layout.line_list_item, null);
         }
 
-        TextView txtListChild = (TextView) view.findViewById(R.id.lblListItem);
-        txtListChild.setText(childText);
+        TextView shortName = (TextView) view.findViewById(R.id.itemShortName);
+        shortName.setText(line.getShortName());
+        shortName.getBackground().setColorFilter(Color.parseColor("#"+line.getColor()), PorterDuff.Mode.SRC_OVER);
+
+        TextView name = (TextView) view.findViewById(R.id.lblListItem);
+        name.setText(line.getLongName());
+
         return view;
     }
 

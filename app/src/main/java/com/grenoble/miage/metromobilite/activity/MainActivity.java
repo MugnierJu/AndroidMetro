@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.grenoble.miage.metromobilite.R;
 import com.grenoble.miage.metromobilite.controller.NotificationService;
+import com.grenoble.miage.metromobilite.controller.PreferencesHandler;
 import com.grenoble.miage.metromobilite.controller.PreferencesLoader;
 import com.grenoble.miage.metromobilite.model.Arrival;
 import com.grenoble.miage.metromobilite.model.Preference;
@@ -16,13 +19,12 @@ import com.grenoble.miage.metromobilite.model.Preference;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MyActivity {
 
     private Button selectLineButton;
     private Button preferenceButton;
     public static final int REQUEST_ID_Line = 1;
     public static final int REQUEST_ID_Pref = 2;
-    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO test the hashmap create and observ, put the loader as an observable
 
+        PreferencesHandler preferencesHandler = new PreferencesHandler();
         //Activate the Preference loader and the notification service;
-        PreferencesLoader prefLoader = PreferencesLoader.getInstance(this);
         PreferencesLoader.getInstance(this).addObserver(new NotificationService(this));
     }
 

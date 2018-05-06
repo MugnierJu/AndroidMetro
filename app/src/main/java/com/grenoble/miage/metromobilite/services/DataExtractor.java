@@ -162,11 +162,12 @@ public class DataExtractor{
     public String getNextArrival(String stopCode){
         String arrivals = "";
         try {
+
             URL stopUrl = new URL(arrival+stopCode+endArrival);
 
             //Ouvrir la connexion
             HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
-            conn.setRequestMethod("GET");
+
             conn.connect();
 
             int response = conn.getResponseCode();
@@ -189,8 +190,6 @@ public class DataExtractor{
         }
 
         return arrivals;
+
     }
-
-
-
 }

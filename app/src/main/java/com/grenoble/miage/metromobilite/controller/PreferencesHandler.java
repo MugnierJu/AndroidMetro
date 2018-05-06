@@ -3,7 +3,6 @@ package com.grenoble.miage.metromobilite.controller;
 import android.content.Context;
 
 import com.grenoble.miage.metromobilite.model.Preference;
-import com.grenoble.miage.metromobilite.persistance.StorageService;
 import com.grenoble.miage.metromobilite.persistance.StorageServiceImpl;
 
 import java.util.ArrayList;
@@ -12,17 +11,18 @@ import java.util.List;
 public class PreferencesHandler {
 
     /**
-     * Save a preference_item with the format [stopCode][stopName][lineId][lineLongName][direction][isMute];
+     * Save a preference_item with the format [stopCode][stopName][lineId][lineLongName][color][direction][isMute];
      * @param pref
      * @param ctx
      */
     public void savePreference(Preference pref, Context ctx){
         muteAllPreferences(ctx);
-        String dataToSave = "["+pref.getStopCode()+"]["+pref.getStopName()+"]["+pref.getLineId()+"]["+pref.getLineLongName()+"]["+pref.getDirection()+"]["+false+"];";
+        String dataToSave = "["+pref.getStopCode()+"]["+pref.getStopName()+"]["+pref.getLineId()+"]["+pref.getLineName()+"]["+pref.getColor()+"]["+pref.getDirection()+"]["+false+"];";
         StorageServiceImpl.getInstance().addValue(dataToSave,ctx);
     }
 
     public List<Preference> getPreferences(Context ctx){
+
         List<Preference> preferenceList = new ArrayList<>();
         String savedDatas = StorageServiceImpl.getInstance().getValues(ctx);
 
@@ -40,11 +40,13 @@ public class PreferencesHandler {
                         break;
                     case 2: newPref.setLineId(attributes[i]);
                         break;
-                    case 3: newPref.setLineLongName(attributes[i]);
+                    case 3: newPref.setLineName(attributes[i]);
                         break;
-                    case 4: newPref.setDirection(attributes[i]);
+                    case 4: newPref.setColor(attributes[i]);
                         break;
-                    case 5:
+                    case 5: newPref.setDirection(attributes[i]);
+                        break;
+                    case 6:
                             if(attributes[i].equals("true")){
                                 newPref.setMute(true);
                             }else{
@@ -55,7 +57,11 @@ public class PreferencesHandler {
                         break;
                 }
             }
-            preferenceList.add(newPref);
+            // sometimes artifacts came into the the new prefs
+            if (newPref.getStopCode() != null && newPref.getLineId() != null && !newPref.getStopCode().equals("null") && !newPref.getLineId().equals("null")) {
+                preferenceList.add(newPref);
+            }
+
         }
         return preferenceList;
     }
@@ -77,8 +83,49 @@ public class PreferencesHandler {
         clearPreferences(ctx);
 
         for(Preference pref : prefList){
-            String dataToSave = "["+pref.getStopCode()+"]["+pref.getStopName()+"]["+pref.getLineId()+"]["+pref.getLineLongName()+"]["+pref.getDirection()+"]["+true+"];";
+            String dataToSave = "["+pref.getStopCode()+"]["+pref.getStopName()+"]["+pref.getLineId()+"]["+pref.getLineName()+"]["+pref.getColor()+"]["+pref.getDirection()+"]["+true+"];";
             StorageServiceImpl.getInstance().addValue(dataToSave,ctx);
         }
+    }
+
+    /**
+     *
+     * @param prefs the list of preferences
+     * @param position the position of the preferecne to unmute
+     * @param ctx
+     */
+    public void unMutePreference(List<Preference> prefs,int position,Context ctx){
+        clearPreferences(ctx);
+
+        prefs.get(position).setMute(false);
+        Preference unMutedPref = prefs.get(position);
+
+        for(Preference pref : prefs){
+
+            if(unMutedPref.equals(pref)) {
+                String dataToSave = "[" + pref.getStopCode() + "][" + pref.getStopName() + "][" + pref.getLineId() + "][" + pref.getLineName() + "][" + pref.getColor() + "][" + pref.getDirection() + "][" + false + "];";
+                StorageServiceImpl.getInstance().addValue(dataToSave, ctx);
+            }else{
+                String dataToSave = "[" + pref.getStopCode() + "][" + pref.getStopName() + "][" + pref.getLineId() + "][" + pref.getLineName() + "][" + pref.getColor() + "][" + pref.getDirection() + "][" + true + "];";
+                StorageServiceImpl.getInstance().addValue(dataToSave, ctx);
+            }
+        }
+    }
+
+
+    /**
+     *
+     * @param prefs list of all prefs
+     * @param position pref to delete
+     * @param ctx
+     */
+    public void deletePreference(List<Preference> prefs,int position,Context ctx){
+        prefs.remove(prefs.get(position));
+        clearPreferences(ctx);
+
+        for (Preference pref : prefs){
+            savePreference(pref,ctx);
+        }
+
     }
 }

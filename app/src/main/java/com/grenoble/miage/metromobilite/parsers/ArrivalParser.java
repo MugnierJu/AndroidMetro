@@ -41,7 +41,7 @@ public class ArrivalParser {
                             isDouble = true;
                         }
                     }
-                    if(!isDouble && !pattern.getString("desc").equals("SANS VOYAGEUR BUS") && !pattern.getString("desc").equals("SANS VOYAGEUR TRAM")) {
+                    if(!isDouble && !pattern.getString("desc").contains("SANS VOYAGEUR BUS") && !pattern.getString("desc").contains("SANS VOYAGEUR TRAM")) {
 
                         lineArival.setDirection(pattern.getString("desc"));
                         JSONArray times = jsonObject.getJSONArray("times");

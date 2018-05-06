@@ -30,11 +30,11 @@ import java.util.concurrent.TimeoutException;
  * Created by mugnieju on 11/04/18.
  */
 
-public class SelectLineActivity extends AppCompatActivity{
+public class SelectLineActivity extends MyActivity{
     ExpandableListAdapter listAdapter;
     ExpandableListView tramListView;
     List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    HashMap<String, List<TransportLine>> listDataChild;
 
     public static final int REQUEST_ID = 11;
 
@@ -109,38 +109,38 @@ public class SelectLineActivity extends AppCompatActivity{
         }
 
         // Adding trams
-        List<String> trams = new ArrayList<>();
+        List<TransportLine> trams = new ArrayList<>();
         for(TransportLine line : lines){
             if(line.getType().equals("TRAM")){
                 linesInView.add(new TransportLineInView(0,trams.size(),line));
-                trams.add(line.getLongName());
+                trams.add(line);
             }
         }
 
         // Adding chronos
-        List<String> chronos = new ArrayList<>();
+        List<TransportLine> chronos = new ArrayList<>();
         for(TransportLine line : lines){
             if(line.getType().equals("CHRONO")){
                 linesInView.add(new TransportLineInView(1,chronos.size(),line));
-                chronos.add(line.getLongName());
+                chronos.add(line);
             }
         }
 
         // Adding proximos
-        List<String> proximos = new ArrayList<>();
+        List<TransportLine> proximos = new ArrayList<>();
         for(TransportLine line : lines){
             if(line.getType().equals("PROXIMO")){
                 linesInView.add(new TransportLineInView(2,proximos.size(),line));
-                proximos.add(line.getLongName());
+                proximos.add(line);
             }
         }
 
         // Adding flexos
-        List<String> flexos = new ArrayList<>();
+        List<TransportLine> flexos = new ArrayList<>();
         for(TransportLine line : lines){
             if(line.getType().equals("FLEXO")){
                 linesInView.add(new TransportLineInView(3,flexos.size(),line));
-                flexos.add(line.getLongName());
+                flexos.add(line);
             }
         }
 

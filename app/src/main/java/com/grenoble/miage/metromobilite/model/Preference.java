@@ -12,7 +12,8 @@ public class Preference implements Parcelable {
     private String stopName;
 
     private String lineId;
-    private String lineLongName;
+    private String lineName;
+    private String color;
 
     private String direction;
     private boolean isMute;
@@ -41,12 +42,12 @@ public class Preference implements Parcelable {
         this.lineId = lineId;
     }
 
-    public String getLineLongName() {
-        return lineLongName;
+    public String getLineName() {
+        return lineName;
     }
 
-    public void setLineLongName(String lineLongName) {
-        this.lineLongName = lineLongName;
+    public void setLineName(String lineName) {
+        this.lineName = lineName;
     }
 
     public String getDirection() {
@@ -65,13 +66,22 @@ public class Preference implements Parcelable {
         isMute = mute;
     }
 
-    public Preference(String stopCode, String stopName, String lineId, String lineLongName, String direction, boolean isMute) {
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Preference(String stopCode, String stopName, String lineId, String lineName, String color, String direction, boolean isMute) {
         this.stopCode = stopCode;
         this.stopName = stopName;
         this.lineId = lineId;
-        this.lineLongName = lineLongName;
+        this.lineName = lineName;
         this.direction = direction;
         this.isMute = isMute;
+        this.color = color;
     }
 
     public Preference(){}
@@ -88,7 +98,8 @@ public class Preference implements Parcelable {
         dest.writeString(stopCode);
         dest.writeString(stopName);
         dest.writeString(getLineId());
-        dest.writeString(getLineLongName());
+        dest.writeString(getLineName());
+        dest.writeString(color);
         dest.writeString(direction);
         dest.writeString(String.valueOf(isMute));
     }
@@ -112,7 +123,8 @@ public class Preference implements Parcelable {
         this.stopCode = in.readString();
         this.stopName = in.readString();
         this.lineId = in.readString();
-        this.lineLongName = in.readString();
+        this.lineName = in.readString();
+        this.color = in.readString();
         this.direction = in.readString();
         this.isMute = Boolean.getBoolean(in.readString());
     }

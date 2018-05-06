@@ -35,9 +35,12 @@ public class PreferencesLoader extends Observable {
 
     private HashMap<Preference,List<Arrival>> nextArrivalList;
 
+    private Context context;
+
    // private List<Observer> observerList;
 
     private PreferencesLoader(final Context ctx){
+        context = ctx;
         prefList = new ArrayList<>();
         nextArrivalList = new HashMap<>();
         //observerList = new ArrayList<>();
@@ -49,10 +52,9 @@ public class PreferencesLoader extends Observable {
                 HashMap<Preference,List<Arrival>> newArrivalList = new HashMap<>();
 
                 PreferencesHandler prefHandler = new PreferencesHandler();
-                prefList = prefHandler.getPreferences(ctx);
+                prefList = prefHandler.getPreferences(context);
 
                 for(final Preference pref : prefList){
-                    System.out.println(pref.getLineLongName()+" "+pref.isMute());
                     if(!pref.isMute()) {
                         List<LineArrival> lineArrivalList = new ArrayList<>();
 
@@ -88,7 +90,7 @@ public class PreferencesLoader extends Observable {
                 setChanged();
                 notifyObservers();
             }
-        }, 0, 10, TimeUnit.SECONDS);
+        }, 2, 30, TimeUnit.SECONDS);
 
     }
 
@@ -105,6 +107,53 @@ public class PreferencesLoader extends Observable {
 
     public HashMap<Preference,List<Arrival>> getNextArrivalList(){
         return nextArrivalList;
+    }
+
+    /**
+     * Force the preferences to reload
+     */
+    public void reloadPreferences(){
+
+        HashMap<Preference,List<Arrival>> newArrivalList = new HashMap<>();
+
+        PreferencesHandler prefHandler = new PreferencesHandler();
+        prefList = prefHandler.getPreferences(context);
+
+        for(final Preference pref : prefList){
+            if(!pref.isMute()) {
+                List<LineArrival> lineArrivalList = new ArrayList<>();
+
+                //Getting the data of each preference_item
+                ExecutorService arrivalExecutor = Executors.newSingleThreadExecutor();
+                Callable<String> arrivalGetterCallable = new Callable<String>() {
+                    @Override
+                    public String call() {
+                        return DataExtractor.getInstance().getNextArrival(pref.getStopCode());
+                    }
+                };
+
+                Future<String> futureArrival = arrivalExecutor.submit(arrivalGetterCallable);
+                try {
+                    lineArrivalList = new ArrivalParser(futureArrival.get(15, TimeUnit.SECONDS)).parse(pref.getLineId());
+                    //TODO handle the exceptions properly
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+
+                // Take only the 2 next arrivals for the selected direction
+                List<Arrival> twoNextArrival = new ArrayList<>();
+                for (LineArrival lineArrival : lineArrivalList) {
+                    if (lineArrival.getDirection().equals(pref.getDirection())) {
+                        twoNextArrival.add(lineArrival.getListArrivals().get(0));
+                        twoNextArrival.add(lineArrival.getListArrivals().get(1));
+                    }
+                }
+                newArrivalList.put(pref, twoNextArrival);
+            }
+        }
+        nextArrivalList = newArrivalList;
+        setChanged();
+        notifyObservers();
     }
 
 }
