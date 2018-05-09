@@ -2,6 +2,8 @@ package com.grenoble.miage.metromobilite.controller;
 
 import android.content.Context;
 
+import com.grenoble.miage.metromobilite.activity.MainActivity;
+import com.grenoble.miage.metromobilite.activity.MyActivity;
 import com.grenoble.miage.metromobilite.model.Arrival;
 import com.grenoble.miage.metromobilite.model.LineArrival;
 import com.grenoble.miage.metromobilite.model.Preference;
@@ -43,7 +45,8 @@ public class PreferencesLoader extends Observable {
         context = ctx;
         prefList = new ArrayList<>();
         nextArrivalList = new HashMap<>();
-        //observerList = new ArrayList<>();
+
+        //Test
 
         ScheduledExecutorService prefLoaderExecutor = Executors.newSingleThreadScheduledExecutor();
         prefLoaderExecutor.scheduleWithFixedDelay(new Runnable() {
@@ -89,8 +92,9 @@ public class PreferencesLoader extends Observable {
                 nextArrivalList = newArrivalList;
                 setChanged();
                 notifyObservers();
+
             }
-        }, 2, 30, TimeUnit.SECONDS);
+        }, 0, 30, TimeUnit.SECONDS);
 
     }
 

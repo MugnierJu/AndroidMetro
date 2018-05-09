@@ -56,7 +56,7 @@ public class SelectStopActivity extends MyActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_stop);
         context =this;
-
+        loading();
         final TransportLine transportLine = (TransportLine) getIntent().getExtras().get("line");
 
         //Set the datas of the line
@@ -242,6 +242,9 @@ public class SelectStopActivity extends MyActivity {
             //TODO handle the exceptions properly
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
+        }finally {
+            notLoading();
+
         }
     }
 }

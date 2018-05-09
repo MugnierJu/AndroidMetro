@@ -79,7 +79,6 @@ public class PreferenceAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 PreferencesActivity preferencesActivity = (PreferencesActivity)context;
-                preferencesActivity.loading();
                 ImageButton muteB = (ImageButton)view;
                 if(preferenceList.get(position).isMute()){
                     muteB.setImageResource(R.mipmap.ic_lock_silent_mode_off);
@@ -92,7 +91,6 @@ public class PreferenceAdapter extends BaseAdapter {
                     muteB.setImageResource(R.mipmap.ic_lock_silent_mode);
                     preferencesActivity.mute();
                 }
-                preferencesActivity.notLoading();
             }
         });
 

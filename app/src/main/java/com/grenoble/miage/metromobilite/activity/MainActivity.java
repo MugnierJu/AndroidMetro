@@ -52,11 +52,8 @@ public class MainActivity extends MyActivity {
             }
         });
 
-        //TODO test the hashmap create and observ, put the loader as an observable
-
         PreferencesHandler preferencesHandler = new PreferencesHandler();
         //Activate the Preference loader and the notification service;
-        PreferencesLoader.getInstance(this).addObserver(new NotificationService(this));
     }
 
 }

@@ -2,6 +2,7 @@ package com.grenoble.miage.metromobilite.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,8 @@ public class PreferencesActivity extends MyActivity implements Observer {
         setContentView(R.layout.activity_preference);
         preferenceListHashMap = new HashMap<>();
 
+        context = this;
+
         PreferencesLoader.getInstance(this);
         preparePrefenreces();
 
@@ -52,7 +55,6 @@ public class PreferencesActivity extends MyActivity implements Observer {
         preferenceAdapter = new PreferenceAdapter(this,preferenceListHashMap,preferenceList);
         prefListView.setAdapter(preferenceAdapter);
 
-        
     }
 
     private void preparePrefenreces(){
@@ -69,9 +71,10 @@ public class PreferencesActivity extends MyActivity implements Observer {
      * unMute a preference and mute all other
      * @param position the position of the preference
      */
-    public void unMute(int position){
-        PreferencesHandler preferencesHandler = new PreferencesHandler();
-        preferencesHandler.unMutePreference(preferenceList,position,this);
+    public void unMute(final int position){
+        final PreferencesHandler preferencesHandler = new PreferencesHandler();
+
+        preferencesHandler.unMutePreference(preferenceList,position,context);
 
         reloadAdapters();
 
@@ -81,8 +84,9 @@ public class PreferencesActivity extends MyActivity implements Observer {
      * mute all the rpeferecnes
      */
     public  void mute(){
-        PreferencesHandler preferencesHandler = new PreferencesHandler();
-        preferencesHandler.muteAllPreferences(this);
+        final PreferencesHandler preferencesHandler = new PreferencesHandler();
+
+        preferencesHandler.muteAllPreferences(context);
 
         reloadAdapters();
     }

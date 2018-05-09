@@ -43,8 +43,6 @@ public class NotificationService implements Observer {
             // see if there is a arrival for a preference_item which is not mute
             if(arrivalToDisplay != null) {
 
-                System.out.println("background");
-                //TODO fix the notification system
                 final NotificationManager mNotification = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 final Intent launchNotifiactionIntent = new Intent(context, PreferencesActivity.class);
@@ -62,8 +60,6 @@ public class NotificationService implements Observer {
 
                 mNotification.notify(NOTIFICATION_ID, builder.build());
             }
-        }else {
-            System.out.println("foreground");
         }
     }
 

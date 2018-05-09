@@ -149,6 +149,7 @@ public class SelectLineActivity extends MyActivity{
         listDataChild.put(listDataHeader.get(2), proximos);
         listDataChild.put(listDataHeader.get(3), flexos);
 
+
         return linesInView;
     }
 
