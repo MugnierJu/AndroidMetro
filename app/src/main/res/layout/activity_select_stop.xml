@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:gravity="center">
+
         <TextView
             android:id="@+id/actualShortLine"
             android:layout_width="wrap_content"
@@ -77,7 +78,8 @@
     <ListView
         android:id="@+id/nextarrival"
         android:layout_width="match_parent"
-        android:layout_height="309dp" />
+        android:layout_weight="1"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/favbutton"
