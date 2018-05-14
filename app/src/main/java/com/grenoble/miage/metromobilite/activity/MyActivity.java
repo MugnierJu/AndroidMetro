@@ -1,22 +1,30 @@
 package com.grenoble.miage.metromobilite.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
 
-import com.grenoble.miage.metromobilite.R;
-
+@SuppressLint("Registered")
 public class MyActivity extends AppCompatActivity {
 
     ProgressDialog progress;
     Context context;
 
+    //tag of the logger
+    private String TAG;
 
+    public String getTAG() {
+        if(TAG == null){
+            setTAG("UndefinedActivity");
+        }
+        return TAG;
+    }
+
+    public void setTAG(String TAG) {
+        this.TAG = TAG;
+    }
 
     public void loading(){
         if(progress == null){

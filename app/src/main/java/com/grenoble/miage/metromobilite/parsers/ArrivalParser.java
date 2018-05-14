@@ -1,5 +1,8 @@
 package com.grenoble.miage.metromobilite.parsers;
 
+import android.util.Log;
+
+import com.grenoble.miage.metromobilite.activity.MyActivity;
 import com.grenoble.miage.metromobilite.model.Arrival;
 import com.grenoble.miage.metromobilite.model.LineArrival;
 import com.grenoble.miage.metromobilite.model.TransportLine;
@@ -71,7 +74,7 @@ public class ArrivalParser {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.w("ArrivalParser",e.getMessage());
         }
 
         return lineArrivals;
@@ -128,7 +131,7 @@ public class ArrivalParser {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.w("ArrivalParser",e.getMessage());
         }
 
         return lineArrivals;

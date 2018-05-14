@@ -2,8 +2,8 @@ package com.grenoble.miage.metromobilite.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.grenoble.miage.metromobilite.R;
 import com.grenoble.miage.metromobilite.controller.NotificationService;
@@ -19,6 +19,7 @@ public class BootingActivity extends MyActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booting);
         context = this;
+        setTAG("Boot");
 
         final ProgressBar bootingBar = (ProgressBar) findViewById(R.id.bootingBar);
         Thread welcomeThread = new Thread() {
@@ -34,7 +35,8 @@ public class BootingActivity extends MyActivity {
                     }
 
                 } catch (Exception e) {
-                    System.out.println(e);
+                    Log.w(getTAG(),e.getMessage());
+
                 } finally {
 
                     Intent i = new Intent(BootingActivity.this,

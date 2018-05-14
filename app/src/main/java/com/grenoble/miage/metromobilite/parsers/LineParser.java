@@ -1,5 +1,7 @@
 package com.grenoble.miage.metromobilite.parsers;
 
+import android.util.Log;
+
 import com.grenoble.miage.metromobilite.model.TransportLine;
 
 import org.json.JSONArray;
@@ -48,7 +50,7 @@ public class LineParser {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.w("LineParser",e.getMessage());
         }
 
         return transportLines;

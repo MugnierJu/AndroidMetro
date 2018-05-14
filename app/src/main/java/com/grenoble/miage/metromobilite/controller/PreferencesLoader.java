@@ -1,6 +1,7 @@
 package com.grenoble.miage.metromobilite.controller;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.grenoble.miage.metromobilite.activity.MainActivity;
 import com.grenoble.miage.metromobilite.activity.MyActivity;
@@ -75,7 +76,7 @@ public class PreferencesLoader extends Observable {
                             lineArrivalList = new ArrivalParser(futureArrival.get(15, TimeUnit.SECONDS)).parse(pref.getLineId());
                             //TODO handle the exceptions properly
                         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                            e.printStackTrace();
+                            Log.w(((MyActivity) context).getTAG(),e.getMessage());
                         }
 
                         // Take only the 2 next arrivals for the selected direction
@@ -139,9 +140,8 @@ public class PreferencesLoader extends Observable {
                 Future<String> futureArrival = arrivalExecutor.submit(arrivalGetterCallable);
                 try {
                     lineArrivalList = new ArrivalParser(futureArrival.get(15, TimeUnit.SECONDS)).parse(pref.getLineId());
-                    //TODO handle the exceptions properly
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
+                    Log.w(((MyActivity) context).getTAG(),e.getMessage());
                 }
 
                 // Take only the 2 next arrivals for the selected direction

@@ -3,6 +3,7 @@ package com.grenoble.miage.metromobilite.activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +27,7 @@ import com.grenoble.miage.metromobilite.services.DataExtractor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -56,12 +58,16 @@ public class SelectStopActivity extends MyActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_stop);
         context =this;
+        setTAG("SelectStop");
+
         loading();
-        final TransportLine transportLine = (TransportLine) getIntent().getExtras().get("line");
+        final TransportLine transportLine = (TransportLine) Objects.requireNonNull(getIntent().getExtras()).get("line");
+
+
 
         //Set the datas of the line
         TextView lineShortName = (TextView) findViewById(R.id.actualShortLine);
-        lineShortName.setText(transportLine.getShortName());
+        lineShortName.setText(Objects.requireNonNull(transportLine).getShortName());
         lineShortName.getBackground().setColorFilter(Color.parseColor("#"+transportLine.getColor()), PorterDuff.Mode.SRC_OVER);
         TextView lineLongName = (TextView) findViewById(R.id.actualLine);
         lineLongName.setText(transportLine.getLongName());
@@ -88,13 +94,12 @@ public class SelectStopActivity extends MyActivity {
         nextArrivalView = (ListView) findViewById(R.id.nextarrival);
 
 
-        //TODO implement fav button (add stop line and direction to the storage) + use a nice toast to prevent the user ;)
         favButton = (Button) findViewById(R.id.favbutton);
         favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PreferencesHandler prefHandler = new PreferencesHandler();
-                prefHandler.savePreference(new Preference(getSelectedStop().getCode(), getSelectedStop().getName(),transportLine.getId(),transportLine.getShortName(),transportLine.getColor(),getSelectedDirection(),false),context);
+                prefHandler.savePreference(new Preference(Objects.requireNonNull(getSelectedStop()).getCode(), getSelectedStop().getName(),transportLine.getId(),transportLine.getShortName(),transportLine.getColor(),getSelectedDirection(),false),context);
 
                 Toast.makeText(getApplicationContext(),
                         getSelectedStop().getName()+", direction : "+getSelectedDirection()+"\nAjouté aux favoris.",
@@ -119,14 +124,14 @@ public class SelectStopActivity extends MyActivity {
                     directionList.add(lineArrival.getDirection());
                 }
 
-                directionAdapter = new ArrayAdapter<String>(context,
+                directionAdapter = new ArrayAdapter<>(context,
                         android.R.layout.simple_spinner_item, directionList);
                 directionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 directionSpinner.setAdapter(directionAdapter);
 
 
                 //set the next arrival view
-                arrivalAdapter = new ArrayAdapter<String>(SelectStopActivity.this,
+                arrivalAdapter = new ArrayAdapter<>(SelectStopActivity.this,
                         android.R.layout.simple_list_item_1, getArrivalForCurrentDirection());
                 nextArrivalView.setAdapter(arrivalAdapter);
             }
@@ -142,7 +147,7 @@ public class SelectStopActivity extends MyActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 //set the next arrival view
-                arrivalAdapter = new ArrayAdapter<String>(SelectStopActivity.this,
+                arrivalAdapter = new ArrayAdapter<>(SelectStopActivity.this,
                         android.R.layout.simple_list_item_1, getArrivalForCurrentDirection());
                 nextArrivalView.setAdapter(arrivalAdapter);
             }
@@ -195,7 +200,7 @@ public class SelectStopActivity extends MyActivity {
 
     /**
      * Get all the needed data  of the stops
-     * @param line
+     * @param line the selected transport line
      */
     private void prepareStopListData(final TransportLine line){
         stopList = new ArrayList<>();
@@ -209,20 +214,20 @@ public class SelectStopActivity extends MyActivity {
             }
         };
 
-        Future<String> futureStops = stopExecutor.submit(stopGetterCallable);
+        Future<String> futureStops;
+        futureStops = stopExecutor.submit(stopGetterCallable);
         try {
             stopList = new StopParser(futureStops.get(10, TimeUnit.SECONDS)).parse();
-            //TODO handle the exceptions properly
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
+            Log.w(getTAG(),e.getMessage());
         }
     }
 
 
     /**
      * Get all the arrivals for the select stop
-     * @param line
-     * @param stop
+     * @param line, the selected line
+     * @param stop, the selected stop
      */
     public void prepareArrivalListData(TransportLine line, final TransportStop stop){
         lineArrivalList = new ArrayList<>();
@@ -239,12 +244,10 @@ public class SelectStopActivity extends MyActivity {
         Future<String> futureArrival = arrivalExecutor.submit(arrivalGetterCallable);
         try {
             lineArrivalList = new ArrivalParser(futureArrival.get(10, TimeUnit.SECONDS)).parse(line);
-            //TODO handle the exceptions properly
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
+            Log.w(getTAG(),e.getMessage());
         }finally {
             notLoading();
-
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.grenoble.miage.metromobilite.services;
 
+import android.util.Log;
+
+import com.grenoble.miage.metromobilite.activity.MyActivity;
 import com.grenoble.miage.metromobilite.model.TransportLine;
 import com.grenoble.miage.metromobilite.model.TransportStop;
 
@@ -26,14 +29,15 @@ public class DataExtractor{
     private DataExtractor(){
         //sale
         try {
-            //TODO remove this
+
+            //Really dirty
             transportLigneUrl = new URL("https://data.metromobilite.fr/api/routers/default/index/routes");
             stop = "https://data.metromobilite.fr/api/routers/default/index/routes/";
             arrival = "https://data.metromobilite.fr/api/routers/default/index/clusters/";
             endArrival = "/stoptimes";
             endStop = "/clusters";
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.w("DataExtractor",e.getMessage());
         }
     }
 
@@ -74,7 +78,7 @@ public class DataExtractor{
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("DataExtractor",e.getMessage());
         }
 
         return lines;
@@ -96,9 +100,7 @@ public class DataExtractor{
             conn.connect();
 
             int response = conn.getResponseCode();
-
-            //dervrai test quel exception est renvoyée
-
+            
             if(response == 200)
             {
                 Scanner sc = new Scanner(stopUrl.openStream());
@@ -111,7 +113,7 @@ public class DataExtractor{
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("DataExtractor",e.getMessage());
         }
 
         return stops;
@@ -148,7 +150,7 @@ public class DataExtractor{
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("DataExtractor",e.getMessage());
         }
 
         return arrivals;
@@ -186,7 +188,7 @@ public class DataExtractor{
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("DataExtractor",e.getMessage());
         }
 
         return arrivals;

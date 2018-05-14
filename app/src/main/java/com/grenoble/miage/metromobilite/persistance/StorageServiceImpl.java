@@ -1,15 +1,19 @@
 package com.grenoble.miage.metromobilite.persistance;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.grenoble.miage.metromobilite.activity.MyActivity;
 
 import java.io.FileOutputStream;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class StorageServiceImpl implements StorageService {
 
-    //TODO remove this
+    //Dirty...
     private final String favFile = "favFile";
 
     private static StorageService instance = null;
@@ -27,16 +31,16 @@ public class StorageServiceImpl implements StorageService {
         int c;
         String temp="";
         try {
-            FileInputStream fis = openFileTORead(ctx);
-            InputStreamReader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-            while( (c = reader.read()) != -1){
-                temp = temp + Character.toString((char)c);
+            try (FileInputStream fis = openFileTORead(ctx)) {
+                InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(fis), StandardCharsets.UTF_8);
+                while ((c = reader.read()) != -1) {
+                    temp = temp + Character.toString((char) c);
+                }
+                fis.close();
             }
-            fis.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w(((MyActivity) ctx).getTAG(),e.getMessage());
         }
-        System.out.println("----------");
         return temp;
     }
 
@@ -49,7 +53,7 @@ public class StorageServiceImpl implements StorageService {
             writer.write(oldValues+value);
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w(((MyActivity) ctx).getTAG(),e.getMessage());
         }
     }
 
@@ -71,7 +75,7 @@ public class StorageServiceImpl implements StorageService {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w(((MyActivity) ctx).getTAG(),e.getMessage());
         }
     }
 
@@ -79,7 +83,7 @@ public class StorageServiceImpl implements StorageService {
         try {
             return ctx.openFileOutput(favFile, Context.MODE_PRIVATE);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.w(((MyActivity) ctx).getTAG(),e.getMessage());
             return null;
         }
     }
@@ -93,9 +97,9 @@ public class StorageServiceImpl implements StorageService {
                 outputStream.close();
                 return  openFileTORead(ctx);
             } catch (IOException e1) {
-                e1.printStackTrace();
+                Log.w(((MyActivity) ctx).getTAG(),e1.getMessage());
             }
-            e.printStackTrace();
+            Log.w(((MyActivity) ctx).getTAG(),e.getMessage());
             return null;
         }
     }

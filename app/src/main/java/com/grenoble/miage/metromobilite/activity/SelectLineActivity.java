@@ -2,7 +2,7 @@ package com.grenoble.miage.metromobilite.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -42,6 +42,7 @@ public class SelectLineActivity extends MyActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_line);
+        setTAG("SelectLine");
 
         // get the listview
         tramListView = (ExpandableListView) findViewById(R.id.lineList);
@@ -99,13 +100,8 @@ public class SelectLineActivity extends MyActivity{
         Future<String> futureLines = lineExecutor.submit(lineGetterCallable);
         try {
             lines = new LineParser(futureLines.get(15, TimeUnit.SECONDS)).parse();
-            //TODO handle the exceptions properly
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            Log.w(getTAG(),e.getMessage());
         }
 
         // Adding trams

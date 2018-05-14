@@ -1,6 +1,5 @@
 package com.grenoble.miage.metromobilite.parsers;
 
-import com.grenoble.miage.metromobilite.model.TransportLine;
 import com.grenoble.miage.metromobilite.model.TransportStop;
 
 import org.json.JSONArray;
@@ -17,10 +16,11 @@ import org.json.JSONArray;
 public class StopParser {
 
     private String toParse;
-    private ArrayList<TransportStop> transportStops = new ArrayList<>();
+    private ArrayList<TransportStop> transportStops;
 
     public StopParser(String toParse) {
         this.toParse = toParse;
+        transportStops = new ArrayList<>();
     }
 
     public ArrayList<TransportStop> parse() {

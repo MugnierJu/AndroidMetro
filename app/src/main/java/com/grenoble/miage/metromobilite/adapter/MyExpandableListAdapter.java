@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.grenoble.miage.metromobilite.R;
+import com.grenoble.miage.metromobilite.activity.MyActivity;
 import com.grenoble.miage.metromobilite.model.TransportLine;
 
 import java.util.HashMap;
@@ -39,8 +41,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         try {
             return this.listDataChild.get(this.listDataHeader.get(groupId)).size();
         }catch (NullPointerException e){
-            //TODO vomitif... mettre un logger
-            System.out.println("You are trying to open an empty or a corrupted list : "+e);
+            Log.w(((MyActivity) context).getTAG(),e.getMessage());
         }
         return 0;
     }
