@@ -20,7 +20,6 @@
         android:text="Chercher une ligne"
         android:background="@color/colorAccent"
         android:textColor="#FFFFFF"
-        android:fontFamily="@font/latoblack"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         />
@@ -35,8 +34,6 @@
         android:text="Favoris"
         android:background="@color/colorAccent"
         android:textColor="#FFFFFF"
-        android:fontFamily="@font/latoblack"
-
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"/>
 
@@ -51,7 +48,6 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:text="Geolocalisation"
-        android:fontFamily="@font/latoblack"
         android:textColor="#FFFFFF" />
 
     <ProgressBar

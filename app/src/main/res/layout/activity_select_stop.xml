@@ -36,7 +36,6 @@
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:textSize="@dimen/title_size"
-        android:fontFamily="@font/latobold"
         android:textColor="#000000"
         android:text="Selectionner votre arret : " />
 
@@ -51,7 +50,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/title_size"
-        android:fontFamily="@font/latobold"
         android:textColor="#000000"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
@@ -71,7 +69,6 @@
         android:layout_marginLeft="5dp"
         android:paddingLeft="5dp"
         android:textSize="@dimen/title_size"
-        android:fontFamily="@font/latobold"
         android:textColor="#000000"
         android:text="Prochains passages : " />
 

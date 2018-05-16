@@ -74,7 +74,6 @@ public class PreferencesLoader extends Observable {
                         Future<String> futureArrival = arrivalExecutor.submit(arrivalGetterCallable);
                         try {
                             lineArrivalList = new ArrivalParser(futureArrival.get(15, TimeUnit.SECONDS)).parse(pref.getLineId());
-                            //TODO handle the exceptions properly
                         } catch (InterruptedException | ExecutionException | TimeoutException e) {
                             Log.w(((MyActivity) context).getTAG(),e.getMessage());
                         }
