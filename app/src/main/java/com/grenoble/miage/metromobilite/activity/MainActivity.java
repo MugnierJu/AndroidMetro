@@ -14,6 +14,7 @@ public class MainActivity extends MyActivity {
     private Button geolocalisationButton;
     public static final int REQUEST_ID_Line = 1;
     public static final int REQUEST_ID_Pref = 2;
+    public static final int REQUEST_ID_Geol = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class MainActivity extends MyActivity {
             @Override
             public void onClick(View view) {
                 Intent addIntent = new Intent(MainActivity.this, GeolocalisationActivity.class);
-                startActivity(addIntent);
+                startActivityForResult(addIntent, REQUEST_ID_Geol);
             }
         });
     }

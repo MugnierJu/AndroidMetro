@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -192,6 +193,40 @@ public class DataExtractor{
         }
 
         return arrivals;
+
+    }
+
+    public String getNearLines(float x, float y){
+        String nearLines = "";
+        try {
+            // really really dirty
+            URL stopUrl = new URL("https://data.metromobilite.fr/api/linesNear/json?x="+x+"&y="+y+"&dist=1000&details=true");
+
+            //Ouvrir la connexion
+            HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
+
+            conn.connect();
+
+            int response = conn.getResponseCode();
+
+            //dervrai test quel exception est renvoyée
+
+            if(response == 200)
+            {
+                Scanner sc = new Scanner(stopUrl.openStream());
+                while(sc.hasNext())
+                {
+                    nearLines+=sc.nextLine();
+                }
+                sc.close();
+            }
+
+
+        } catch (IOException e) {
+            Log.w("DataExtractor",e.getMessage());
+        }
+
+        return nearLines;
 
     }
 }
