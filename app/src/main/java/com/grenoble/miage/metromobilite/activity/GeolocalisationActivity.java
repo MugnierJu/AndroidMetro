@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.grenoble.miage.metromobilite.R;
 import com.grenoble.miage.metromobilite.model.NearLine;
+import com.grenoble.miage.metromobilite.model.TransportLine;
 import com.grenoble.miage.metromobilite.parsers.LineParser;
 import com.grenoble.miage.metromobilite.parsers.NearLinesParser;
 import com.grenoble.miage.metromobilite.services.DataExtractor;
@@ -67,25 +68,33 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
     private boolean firstPosition = true;
     List<NearLine> newNearLines = new ArrayList<NearLine>();
     List<NearLine> nearLines = new ArrayList<NearLine>();
+    List<TransportLine> transportLines = new ArrayList<TransportLine>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geolocalisation);
 
+        ExecutorService lineExecutor = Executors.newSingleThreadExecutor();
+        Callable<String> lineGetterCallable = new Callable<String>() {
+            @Override
+            public String call(){
+                return DataExtractor.getInstance().getTransportLignes();
+            }
+        };
+
+        Future<String> futureLines = lineExecutor.submit(lineGetterCallable);
+        try {
+            transportLines = new LineParser(futureLines.get(15, TimeUnit.SECONDS)).parse();
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            //error
+        }
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    System.out.println("======================================================");
-                    System.out.println("OH ... LOCATION IS NULL");
-                    System.out.println("======================================================");
-                } else {
-                    System.out.println("======================================================");
-                    System.out.println("YOU HAVE A LOCATION");
-                    System.out.println("======================================================");
-                    //stopLocationUpdates();
+                if (locationResult != null) {
                     gettingLastLocation();
                 }
 
@@ -115,20 +124,12 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
         } else {
             startingLocationRequest();
         }
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println();
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println("======================================================");
-        System.out.println("FIN DE LA GEOLOCALISATION");
-        System.out.println("======================================================");
         stopLocationUpdates();
     }
 
@@ -140,10 +141,6 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startingLocationRequest();
-                } else {
-                    System.out.println("======================================================");
-                    System.out.println("BAD TIME ... LOCATION DENIED");
-                    System.out.println("======================================================");
                 }
                 return;
             }
@@ -151,7 +148,6 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
     }
 
     private void gettingLastLocation() {
-        System.out.println("=============gettingLastLocation=============");
         //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -170,10 +166,6 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
                 if (location != null) {
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
-                    System.out.println("======================================================");
-                    System.out.println("GREAT ! LOCATION ACCEPTED WITH CHECK");
-                    System.out.println(latitude + " " + longitude);
-                    System.out.println("======================================================");
                     myMarker.setPosition(new LatLng(latitude, longitude));
 
                     ExecutorService nearLinesExecutor = Executors.newSingleThreadExecutor();
@@ -197,35 +189,31 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
 
                     setPoints();
 
-                } else {
-                    System.out.println("======================================================");
-                    System.out.println("OH ... LOCATION IS NULL");
-                    System.out.println("======================================================");
                 }
             }
         });
     }
 
     private void setPoints() {
-        System.out.println("///////////////////////////////////");
-        System.out.println("////////////SET POINTS/////////////");
-        System.out.println("///////////////////////////////////");
+        String lineName = "";
         for (NearLine nl : newNearLines) {
             if (!nearLines.contains(nl)) {
-                System.out.println("///////////////////////////////////");
-                System.out.println("////////////IN IF//////////////////");
-                System.out.println("///////////////////////////////////");
                 nearLines.add(nl);
+                for (TransportLine tl : transportLines) {
+                    if (tl.getId().equals(nl.getLines().get(0))){
+                        lineName = tl.getShortName();
+                    }
+                }
                 myMap.addMarker(new MarkerOptions()
                         .position(new LatLng(nl.getLat(), nl.getLon()))
                         .title(nl.getName())
+                        .snippet(lineName)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
         }
     }
 
     protected void startingLocationRequest() {
-        System.out.println("=============startingLocationRequest=============");
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
