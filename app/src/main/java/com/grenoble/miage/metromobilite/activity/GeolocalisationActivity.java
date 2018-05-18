@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,7 +33,20 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.grenoble.miage.metromobilite.R;
+import com.grenoble.miage.metromobilite.model.NearLine;
+import com.grenoble.miage.metromobilite.parsers.LineParser;
+import com.grenoble.miage.metromobilite.parsers.NearLinesParser;
 import com.grenoble.miage.metromobilite.services.DataExtractor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by rubata on 25/04/18.
@@ -51,7 +65,8 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
     private GoogleMap myMap;
     private Marker myMarker;
     private boolean firstPosition = true;
-    private DataExtractor dataExtractor = DataExtractor.getInstance();
+    List<NearLine> newNearLines = new ArrayList<NearLine>();
+    List<NearLine> nearLines = new ArrayList<NearLine>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,11 +175,28 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
                     System.out.println(latitude + " " + longitude);
                     System.out.println("======================================================");
                     myMarker.setPosition(new LatLng(latitude, longitude));
-                    //System.out.println(dataExtractor.getNearLines((float)longitude, (float)latitude));
+
+                    ExecutorService nearLinesExecutor = Executors.newSingleThreadExecutor();
+                    Callable<String> nearLinesGetterCallable = new Callable<String>() {
+                        @Override
+                        public String call(){
+                            return DataExtractor.getInstance().getNearLines((float)longitude, (float)latitude);
+                        }
+                    };
+
+                    Future<String> futureNearLines = nearLinesExecutor.submit(nearLinesGetterCallable);
+                    try {
+                        newNearLines = new NearLinesParser(futureNearLines.get(15, TimeUnit.SECONDS)).parse();
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                        // error
+                    }
                     if (firstPosition) {
                         myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
                         firstPosition = false;
                     }
+
+                    setPoints();
+
                 } else {
                     System.out.println("======================================================");
                     System.out.println("OH ... LOCATION IS NULL");
@@ -172,6 +204,24 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
                 }
             }
         });
+    }
+
+    private void setPoints() {
+        System.out.println("///////////////////////////////////");
+        System.out.println("////////////SET POINTS/////////////");
+        System.out.println("///////////////////////////////////");
+        for (NearLine nl : newNearLines) {
+            if (!nearLines.contains(nl)) {
+                System.out.println("///////////////////////////////////");
+                System.out.println("////////////IN IF//////////////////");
+                System.out.println("///////////////////////////////////");
+                nearLines.add(nl);
+                myMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(nl.getLat(), nl.getLon()))
+                        .title(nl.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            }
+        }
     }
 
     protected void startingLocationRequest() {
@@ -253,6 +303,6 @@ public class GeolocalisationActivity extends AppCompatActivity implements OnMapR
         myMarker = myMap.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Votre position")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
     }
 }

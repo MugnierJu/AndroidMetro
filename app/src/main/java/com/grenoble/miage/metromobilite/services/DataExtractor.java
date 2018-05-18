@@ -24,6 +24,7 @@ public class DataExtractor{
     private String arrival ;
     private String endArrival;
     private String endStop;
+    private int distance = 1000;
 
     private static DataExtractor instance = null;
 
@@ -200,7 +201,7 @@ public class DataExtractor{
         String nearLines = "";
         try {
             // really really dirty
-            URL stopUrl = new URL("https://data.metromobilite.fr/api/linesNear/json?x="+x+"&y="+y+"&dist=1000&details=true");
+            URL stopUrl = new URL("https://data.metromobilite.fr/api/linesNear/json?x="+x+"&y="+y+"&dist="+distance+"&details=true");
 
             //Ouvrir la connexion
             HttpURLConnection conn = (HttpURLConnection)stopUrl.openConnection();
